@@ -351,11 +351,16 @@ pub fn get_keybd_key(c: char) -> Option<KeybdKey> {
     }
 }
 
-pub struct KeySequence(pub &'static str);
+pub struct KeySequence {
+    chars: String
+}
 
 impl KeySequence {
+    pub fn new(c: String) -> KeySequence {
+        KeySequence { chars: c }
+    }
     pub fn send(&self) {
-        for c in self.0.chars() {
+        for c in self.chars.chars() {
             let mut uppercase = false;
 
             if let Some(keybd_key) = {
@@ -375,9 +380,29 @@ impl KeySequence {
                     KeybdKey::LShiftKey.press();
                 }
 
-                keybd_key.press();
-                sleep(Duration::from_millis(20));
-                keybd_key.release();
+                #[cfg(target_os = "windows")]
+                    {
+                        if c == '@' {
+                            KeybdKey::LControlKey.press();
+                            KeybdKey::LAltKey.press();
+                            KeybdKey::Numrow2Key.press();
+                            sleep(Duration::from_millis(20));
+                            KeybdKey::Numrow2Key.release();
+                            KeybdKey::LAltKey.release();
+                            KeybdKey::LControlKey.release();
+                        } else {
+                            keybd_key.press();
+                            sleep(Duration::from_millis(20));
+                            keybd_key.release();
+                        }
+                    }
+
+                #[cfg(target_os = "linux")]
+                    {
+                        keybd_key.press();
+                        sleep(Duration::from_millis(20));
+                        keybd_key.release();
+                    }
 
                 if uppercase {
                     KeybdKey::LShiftKey.release();
