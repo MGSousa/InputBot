@@ -17,7 +17,7 @@ use std::{thread::sleep, time::Duration};
 fn main() {
     // Bind the number 1 key your keyboard to a function that types 
     // "Hello, world!" when pressed.
-    Numrow1Key.bind(|| KeySequence("Hello, world!").send());
+    Numrow1Key.bind(|| KeySequence::new(String::from("Hello, world!")).send());
 
     // Bind your caps lock key to a function that starts an autoclicker.
     CapsLockKey.bind(move || {
@@ -38,7 +38,7 @@ fn main() {
 
 ```toml
 [dependencies]
-inputbot = { git = "https://github.com/obv-mikhail/InputBot", branch = "develop" }
+inputbot = { git = "https://github.com/MGSousa/InputBot", branch = "develop" }
 ```
 
 Check out **[examples](/examples)** for comprehensive examples on how to use each feature.
